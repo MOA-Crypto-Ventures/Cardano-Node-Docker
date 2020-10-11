@@ -4,13 +4,39 @@ Cardano node Docker version to be flexible, fast and safe in deployment.
 
 ## Introduction
 
-This `Dockerfile` compiles cardano-node and cardano-cli. You will need **Cardano Stake Pool Operator** skills as well as basic Bash and Docker skills. The `docker-compose.yml` file contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
+This "Dockerfile" compiles cardano-node and cardano-cli. You will need **Cardano Stake Pool Operator** skills as well as basic Bash and Docker skills. The "docker-compose.yml" file contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
 
-## How to setup
+## How to setup a Cardano Relay Node
 
-1. Change docker-compose.yml to your needs. If you create a folder "config", "data" and "ipc" in the folder of docker-compose.yml, all should be perfect. You have just to change "your.ip" to match you public IP.
-2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder
-3. `docker-compose up` will build with instructions from Dockerfile and run the node
+Create a "docker-compose.yml" like the following:
+
+```yml
+version: '2'
+
+services:
+    cardano-relay-node:
+        image: ststolz/cardano-node:latest
+        container_name: cardano-relay-node
+        network_mode: host
+        volumes:
+            - ./config:/configuration
+            - ./data:/data
+            - ./ipc:/ipc
+        command: ["run", 
+                    "--config", "/configuration/mainnet-config.json", 
+                    "--topology", "/configuration/mainnet-topology.json", 
+                    "--database-path", "/data/db", 
+                    "--port", "7030", 
+                    "--host-addr", "x.x.x.x", 
+                    "--socket-path", "/ipc/node.socket"]
+```
+
+1. Change "x.x.x.x" in "docker-compose.yml" to match public IP.
+2. Create a folder "config", "data" and "ipc" in the folder containing "docker-compose.yml".
+3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder.
+4. Change into directory containing docker-compose.yml and execute `docker-compose up`. This will pull the image from https://hub.docker.com/ and start the container.
+
+Congrats! Relay Node running!
 
 ## Example for using the node
 
