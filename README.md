@@ -8,7 +8,7 @@ This `Dockerfile` compiles cardano-node and cardano-cli. You will need **Cardano
 
 ## How to setup
 
-1. Change docker-compose.yml to your needs. If you make a folder "config", "data" and "ipc" in the folder of docker-compose.yml, all should be perfect. You have just to change "your.ip" to match you public IP.
+1. Change docker-compose.yml to your needs. If you create a folder "config", "data" and "ipc" in the folder of docker-compose.yml, all should be perfect. You have just to change "your.ip" to match you public IP.
 2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder
 3. `docker-compose up` will build with instructions from Dockerfile and run the node
 
