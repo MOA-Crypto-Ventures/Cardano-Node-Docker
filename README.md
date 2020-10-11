@@ -62,7 +62,7 @@ magicparam="--testnet-magic 42"
 tempDir="./tmp"
 ```
 
-It is now important, that you put the path of the scripts into your PATH:
+It is important, to put the path of the scripts into your PATH environment variable:
 
 ```
 PATH=/path/to/script/executables:$PATH
