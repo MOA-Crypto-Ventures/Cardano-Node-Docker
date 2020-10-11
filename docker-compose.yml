@@ -3,7 +3,7 @@ version: '2'
 services:
 
     cardano-node:
-        image: sstolz/cardano-node:1.21.1
+        image: ststolz/cardano-node
         container_name: stolz-cardano-relay
         network_mode: host
         volumes:
