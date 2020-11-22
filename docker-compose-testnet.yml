@@ -14,8 +14,8 @@ services:
             dockerfile: Dockerfile
             context: ./
         command: ["cardano-node", "run", 
-                    "--config", "/configuration/mainnet-config.json", 
-                    "--topology", "/configuration/mainnet-topology.json", 
+                    "--config", "/configuration/testnet-config.json", 
+                    "--topology", "/configuration/testnet-topology.json", 
                     "--database-path", "/data/db", 
                     "--port", "7030", 
                     "--host-addr", "x.x.x.x", 

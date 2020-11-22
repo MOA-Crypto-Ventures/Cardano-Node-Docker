@@ -8,6 +8,11 @@ ENV ENV_VER=${VER}
 
 RUN mkdir -p ~/.local/bin
 
+RUN mkdir -p /configuration
+COPY ./configuration-mainnet /configuration-mainnet
+COPY ./configuration-testnet /configuration-testnet
+
+
 ENV PATH="/root/.cabal/bin:/root/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="/ipc/node.socket"
@@ -47,4 +52,4 @@ RUN echo ${PATH} && \
     cabal build cardano-node cardano-cli && \
     cabal install cardano-node cardano-cli
 WORKDIR /data
-ENTRYPOINT ["cardano-node"]
+# ENTRYPOINT ["cardano-node"]
