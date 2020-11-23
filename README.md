@@ -19,12 +19,12 @@ services:
         container_name: cardano-relay-node
         network_mode: host
         volumes:
-            - ./config:/configuration
+            - ./configuration:/configuration-mainnet
             - ./data:/data
             - ./ipc:/ipc
-        command: ["run", 
-                    "--config", "/configuration/mainnet-config.json", 
-                    "--topology", "/configuration/mainnet-topology.json", 
+        command: ["cardano-node", "run", 
+                    "--config", "/configuration-mainnet/mainnet-config.json", 
+                    "--topology", "/configuration-mainnet/mainnet-topology.json", 
                     "--database-path", "/data/db", 
                     "--port", "7030", 
                     "--host-addr", "x.x.x.x", 
@@ -32,8 +32,8 @@ services:
 ```
 
 1. Change "x.x.x.x" in "docker-compose.yml" to match public IP.
-2. Create a folder "config", "data" and "ipc" in the folder containing "docker-compose.yml".
-3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder.
+2. Create a folder "configuration", "data" and "ipc" in the folder containing "docker-compose.yml".
+3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder. Alternatively you can copy the folder "/configuration-mainnet" or "/configuration-testnet" out of the container.
 4. Change into directory containing docker-compose.yml and execute `docker-compose up`. This will pull the image from https://hub.docker.com/ and start the container.
 
 Congrats! Relay Node running!

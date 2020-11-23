@@ -7,15 +7,15 @@ services:
         container_name: stolz-cardano-relay
         network_mode: host
         volumes:
-            - ./config:/configuration
+            - ./configuration:/configuration-mainnet
             - ./data:/data
             - ./ipc:/ipc
         build:
             dockerfile: Dockerfile
             context: ./
         command: ["cardano-node", "run", 
-                    "--config", "/configuration/mainnet-config.json", 
-                    "--topology", "/configuration/mainnet-topology.json", 
+                    "--config", "/configuration-mainnet/mainnet-config.json", 
+                    "--topology", "/configuration-mainnet/mainnet-topology.json", 
                     "--database-path", "/data/db", 
                     "--port", "7030", 
                     "--host-addr", "x.x.x.x", 
