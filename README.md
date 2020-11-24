@@ -2,11 +2,19 @@
 
 Cardano node Docker version to be flexible, fast and safe in deployment.
 
+## News
+
+To be more flexible, I **removed the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. See the examples below. 
+
 ## Introduction
 
 This "Dockerfile" compiles cardano-node and cardano-cli. You will need **Cardano Stake Pool Operator** skills as well as basic Bash and Docker skills. The "docker-compose.yml" file contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
 
-## How to setup a Cardano Relay Node
+## Hot to use the image for cardano-cli
+
+
+
+## How to setup a Cardano Relay Node with docker-compose.yml
 
 Create a "docker-compose.yml" like the following:
 
@@ -33,10 +41,30 @@ services:
 
 1. Change "x.x.x.x" in "docker-compose.yml" to match public IP.
 2. Create a folder "configuration", "data" and "ipc" in the folder containing "docker-compose.yml".
-3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/3624229/download/1/index.html) and put them into the "config" folder. Alternatively you can copy the folder "/configuration-mainnet" or "/configuration-testnet" out of the container.
+3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/4805432/download/1/index.html) and put them into the "config" folder. Alternatively you can copy the folder "/configuration-mainnet" or "/configuration-testnet" out of the container into local file system.
 4. Change into directory containing docker-compose.yml and execute `docker-compose up`. This will pull the image from https://hub.docker.com/ and start the container.
 
 Congrats! Relay Node running!
+
+## How to use with cold storage
+
+Transfer your image to the cold storage by exporting it to an USB drive:
+
+```bash
+docker save -o <USB_path/cardano-node-image.tar> ststolz/cardano-node:latest
+```
+
+Restore the image on the cold storage:
+
+```bash
+docker load -i <USB_path/cardano-node-image.tar>
+```
+
+Now use it for cardano-cli:
+
+```bash
+docker run --rm -i ststolz/cardano-node:latest cardano-cli [OPTION] ...
+```
 
 ## Example for using the node
 
