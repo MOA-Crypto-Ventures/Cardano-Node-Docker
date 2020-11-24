@@ -41,7 +41,7 @@ services:
 
 1. Change "x.x.x.x" in "docker-compose.yml" to match public IP.
 2. Create a folder "configuration", "data" and "ipc" in the folder containing "docker-compose.yml".
-3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/4805432/download/1/index.html) and put them into the "config" folder. Alternatively you can copy the folder "/configuration-mainnet" or "/configuration-testnet" out of the container into local file system.
+3. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/build/4805432/download/1/index.html) and put them into the "config" folder. Alternatively you can copy the folder "/configuration-mainnet" or "/configuration-testnet" out of the container into local file system (may not be up to date!).
 4. Change into directory containing docker-compose.yml and execute `docker-compose up`. This will pull the image from https://hub.docker.com/ and start the container.
 
 Congrats! Relay Node running!
@@ -68,7 +68,7 @@ docker run --rm -i ststolz/cardano-node:latest cardano-cli [OPTION] ...
 
 ## Example for using the node
 
-I hope this example will help coders with basic docker skills. 
+I hope this example will help coders with basic docker skills. Assuming you use Linux. For other systems you have to adapt.
 
 I assume you want to use [gitmachtl/scripts](https://github.com/gitmachtl/scripts/tree/master/cardano/mainnet). If your Docker container is already running, edit [00_common.sh](https://github.com/gitmachtl/scripts/blob/master/cardano/mainnet/00_common.sh) and change following lines. You have to adjust the path to your needs:
 
@@ -77,13 +77,14 @@ I assume you want to use [gitmachtl/scripts](https://github.com/gitmachtl/script
 
 socket="/path/to/docker-compos.yml/ipc/node.socket"
 
-genesisfile="/path/to/docker-compos.yml/config/mainnet_candidate_4-shelley-genesis.json"           #Shelley
-genesisfile_byron="/path/to/docker-compos.yml/config/mainnet_candidate_4-byron-genesis.json"       #Byron
+genesisfile="/path/to/docker-compos.yml/config-mainnet/mainnet-shelley-genesis.json"           #Shelley
+genesisfile_byron="/path/to/docker-compos.yml/config-mainnet/mainnet-byron-genesis.json"       #Byron
 
-cardanocli="docker exec -w /data -i cardano cardano-cli"
-cardanonode="docker exec -w /data -i cardano cardano-node"
+# $PWD will only work in Linux, adapt for other systems
+cardanocli="docker run --rm -i -v $PWD:/data ststolz/cardano-node:latest cardano-cli"
+cardanonode="docker run --rm -i -v $PWD:/data ststolz/cardano-node:latest cardano-node"
 
-magicparam="--testnet-magic 42"
+magicparam="--testnet-magic 1097911063"
 
 [...]
 
@@ -98,7 +99,7 @@ PATH=/path/to/script/executables:$PATH
 
 and then execute the scripts from your "data" path. Also create a "./tmp" folder in "data".
 
-To adapt it to other use cases, look at the commands `docker exec -w /data -i cardano cardano-cli` and `docker exec -w /data -i cardano cardano-node`. This is how you can call the executables from outside the container. 
+To adapt it to other use cases, look at the commands `docker run --rm -i -v $PWD:/data ststolz/cardano-node:latest cardano-cli` and `docker run --rm -i -v $PWD:/data ststolz/cardano-node:latest cardano-node`. This is how you can call the executables from outside the container. 
 
 ## Security 
 
