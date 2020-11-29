@@ -3,25 +3,27 @@ FROM ubuntu:focal
 LABEL MAINTAINER sstolz
 LABEL description="cardano-node and cardano-cli"
 
-ARG VER="tags/1.21.1"
+ARG NET="mainnet" # mainnet or testnet
+
+ARG VER="tags/1.23.0"
 ENV ENV_VER=${VER}
 
 RUN mkdir -p ~/.local/bin
 
-RUN mkdir -p /configuration
-COPY ./configuration-mainnet /configuration-mainnet
-COPY ./configuration-testnet /configuration-testnet
-
-
+ENV CNODE_HOME="/opt/cardano/cnode"
 ENV PATH="/root/.cabal/bin:/root/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
-ENV CARDANO_NODE_SOCKET_PATH="/ipc/node.socket"
+ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 
+# install cardano-node and cardano-cli
 RUN echo ${PATH} && \
-    apt update -y && \
+    apt-get update -y && \
     export DEBIAN_FRONTEND=noninteractive && \
-    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
-    apt-get install -y tzdata && \
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime 
+# install tools needed for cntools
+RUN apt-get install -y curl original-awk bsdmainutils systemd sudo
+# compile and install tools for cardano compiling
+RUN    apt-get install -y tzdata && \
     dpkg-reconfigure --frontend noninteractive tzdata && \
     apt install -y bc net-tools build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf && \
     cd && \
@@ -45,11 +47,33 @@ RUN echo ${PATH} && \
     ./autogen.sh  && \
     ./configure  && \
     make  && \
-    make install  && \
-    git clone https://github.com/input-output-hk/cardano-node.git  && \
+    make install
+RUN git clone https://github.com/input-output-hk/cardano-node.git  && \
     cd cardano-node && \
     git checkout ${ENV_VER} && \
     cabal build cardano-node cardano-cli && \
     cabal install cardano-node cardano-cli
-WORKDIR /data
-# ENTRYPOINT ["cardano-node"]
+
+## Install guild-operator scripts
+RUN mkdir -p ${CNODE_HOME}/scripts
+RUN mkdir -p ${CNODE_HOME}/guild-db
+RUN mkdir -p ${CNODE_HOME}/logs
+RUN git clone https://github.com/cardano-community/guild-operators.git  && \
+    cd guild-operators && \
+    git checkout master  && \
+    mv ./scripts/cnode-helper-scripts/* ${CNODE_HOME}/scripts && \
+    cd / && rm -rf guild-operators
+
+## Get config files
+RUN mkdir -p ${CNODE_HOME}/files
+RUN mkdir -p ${CNODE_HOME}/files-testnet
+RUN cd ${CNODE_HOME}/files && \
+    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-config.json && \
+    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-byron-genesis.json && \
+    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-shelley-genesis.json && \
+    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-topology.json && \
+    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-db-sync-config.json && \
+    wget https://hydra.iohk.io/build/4805432/download/1/rest-config.json
+
+RUN mkdir -p ${CNODE_HOME}/data
+WORKDIR ${CNODE_HOME}/data
