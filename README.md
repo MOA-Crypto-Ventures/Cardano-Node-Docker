@@ -4,7 +4,8 @@ Cardano node Docker version to be flexible, fast and safe in deployment.
 
 ## News
 
-To be more flexible, I **removed the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. See the examples below. 
+1. [cntools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
+2. To be more flexible, I **removed the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. See the examples below. 
 
 ## Introduction
 
