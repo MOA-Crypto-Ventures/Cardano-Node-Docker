@@ -28,7 +28,7 @@ jobs:
       - name: Push the tagged Docker image
         run: docker push ststolz/cardano-node:${{steps.vars.outputs.tag}}
       - name: Build the tagged Docker image for testnet
-        run: docker build --build-arg net=testnet . --file Dockerfile --tag ststolz/cardano-node:${{steps.vars.outputs.tag}}
+        run: docker build --build-arg net=testnet . --file Dockerfile --tag ststolz/cardano-node:${{steps.vars.outputs.tag}}-testnet
       - name: Push the tagged Docker image
         run: docker push ststolz/cardano-node:${{steps.vars.outputs.tag}}-testnet
 
