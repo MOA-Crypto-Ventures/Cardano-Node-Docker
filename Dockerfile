@@ -3,15 +3,16 @@ FROM ubuntu:focal
 LABEL MAINTAINER sstolz
 LABEL description="cardano-node and cardano-cli"
 
-ARG NET="mainnet" # mainnet or testnet
+# mainnet or testnet
+ARG net="mainnet" 
 
-ARG VER="tags/1.23.0"
-ENV ENV_VER=${VER}
+ARG ver="tags/1.23.0"
+ENV ENV_VER=${ver}
 
 RUN mkdir -p ~/.local/bin
 
 ENV CNODE_HOME="/opt/cardano/cnode"
-ENV PATH="/root/.cabal/bin:/root/.local/bin:${PATH}"
+ENV PATH="${CNODE_HOME}/scripts:/root/.cabal/bin:/root/.local/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 
@@ -21,7 +22,8 @@ RUN echo ${PATH} && \
     export DEBIAN_FRONTEND=noninteractive && \
     ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime 
 # install tools needed for cntools
-RUN apt-get install -y curl original-awk bsdmainutils systemd sudo
+RUN apt-get install -y curl original-awk bsdmainutils sudo
+RUN apt-get install -y libpq-dev python3 build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev systemd libsystemd-dev libsodium-dev zlib1g-dev make g++ tmux git jq libncursesw5 gnupg aptitude libtool autoconf secure-delete iproute2 bc tcptraceroute dialog sqlite libsqlite3-dev
 # compile and install tools for cardano compiling
 RUN    apt-get install -y tzdata && \
     dpkg-reconfigure --frontend noninteractive tzdata && \
@@ -63,17 +65,18 @@ RUN git clone https://github.com/cardano-community/guild-operators.git  && \
     git checkout master  && \
     mv ./scripts/cnode-helper-scripts/* ${CNODE_HOME}/scripts && \
     cd / && rm -rf guild-operators
+RUN sed -i '/^#SOCKET=.* /s/^#//' ${CNODE_HOME}/scripts/env
 
 ## Get config files
 RUN mkdir -p ${CNODE_HOME}/files
-RUN mkdir -p ${CNODE_HOME}/files-testnet
-RUN cd ${CNODE_HOME}/files && \
-    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-config.json && \
-    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-byron-genesis.json && \
-    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-shelley-genesis.json && \
-    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-topology.json && \
-    wget https://hydra.iohk.io/build/4805432/download/1/${NET}-db-sync-config.json && \
-    wget https://hydra.iohk.io/build/4805432/download/1/rest-config.json
+RUN mkdir -p ${CNODE_HOME}/sockets
+WORKDIR ${CNODE_HOME}/files
+RUN pwd
+RUN curl -o config.json https://hydra.iohk.io/build/4805432/download/1/${net}-config.json 
+RUN curl -O https://hydra.iohk.io/build/4805432/download/1/${net}-byron-genesis.json && \
+    curl -O https://hydra.iohk.io/build/4805432/download/1/${net}-shelley-genesis.json && \
+    curl -O https://hydra.iohk.io/build/4805432/download/1/${net}-topology.json && \
+    curl -O https://hydra.iohk.io/build/4805432/download/1/${net}-db-sync-config.json && \
+    curl -O https://hydra.iohk.io/build/4805432/download/1/rest-config.json
 
-RUN mkdir -p ${CNODE_HOME}/data
-WORKDIR ${CNODE_HOME}/data
+WORKDIR ${CNODE_HOME}

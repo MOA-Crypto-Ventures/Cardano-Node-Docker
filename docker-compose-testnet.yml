@@ -2,22 +2,25 @@ version: '2'
 
 services:
 
-    cardano-node:
-        image: ststolz/cardano-node:latest
+    cardano-testnet-node:
+        image: ststolz/cardano-node:latest-testnet
         container_name: stolz-cardano-testnet-relay
         network_mode: host
         volumes:
-            #- ./files:/files-testnet
-            - ./db-testnet:/opt/cardano/cnode/db-testnet
+            #- ./files:/opt/cardano/cnode/files
+            - ./db-testnet:/opt/cardano/cnode/db
             - ./sockets:/opt/cardano/cnode/sockets
-            #- ./scripts:/scripts
+            - ./priv-testnet:/opt/cardano/cnode/priv
+            - ./tmp:/tmp
         build:
             dockerfile: Dockerfile
             context: ./
+            args:
+                net: testnet
         command: ["cardano-node", "run", 
-                    "--config", "/opt/cardano/cnode/files-testnet/testnet-config.json", 
-                    "--topology", "/opt/cardano/cnode/files-testnet/testnet-topology.json", 
-                    "--database-path", "/db-testnet", 
+                    "--config", "/opt/cardano/cnode/files/config.json", 
+                    "--topology", "/opt/cardano/cnode/files/testnet-topology.json", 
+                    "--database-path", "/opt/cardano/cnode/db", 
                     "--socket-path", "/opt/cardano/cnode/sockets/node0.socket",
                     "--port", "7031"
                     ]
