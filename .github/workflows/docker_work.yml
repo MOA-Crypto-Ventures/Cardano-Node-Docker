@@ -22,15 +22,15 @@ jobs:
           auto_tag: true
       - name: Get the version
         id: vars
-        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})
-      - name: Build the tagged Docker image
-        run: docker build . --file Dockerfile --tag ststolz/cardano-node:${{steps.vars.outputs.tag}}
-      - name: Push the tagged Docker image
-        run: docker push ststolz/cardano-node:${{steps.vars.outputs.tag}}
+        run: echo ::set-output name=tag::$(echo ${GITHUB_REF:10})      
       - name: Build the tagged Docker image for testnet
         run: docker build --build-arg net=testnet . --file Dockerfile --tag ststolz/cardano-node:${{steps.vars.outputs.tag}}-testnet
       - name: Push the tagged Docker image
         run: docker push ststolz/cardano-node:${{steps.vars.outputs.tag}}-testnet
+      - name: Build the tagged Docker image
+        run: docker build . --file Dockerfile --tag ststolz/cardano-node:${{steps.vars.outputs.tag}}
+      - name: Push the tagged Docker image
+        run: docker push ststolz/cardano-node:${{steps.vars.outputs.tag}}
 
       # - name: Set up Docker Buildx
       #   id: buildx
