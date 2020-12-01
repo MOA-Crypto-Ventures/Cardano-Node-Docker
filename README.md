@@ -1,19 +1,19 @@
 # Cardano-Node-Docker
 
-Cardano node Docker version to be flexible, fast and safe in deployment.
+[cardano-node](https://github.com/input-output-hk/cardano-node) Docker image with configured [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) to be flexible, fast and safe in deployment.
 
 ## News
 
-1. [cntools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
+1. [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
 2. To be more flexible, I **removed the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. See the examples below. 
 
 ## Introduction
 
-This "Dockerfile" compiles cardano-node and cardano-cli. You will need **Cardano Stake Pool Operator** skills as well as basic Bash and Docker skills. The "docker-compose.yml" file contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
+This "Dockerfile" compiles cardano-node, cardano-cli and installs / configures CNTools. With some Docker skills you can run a cardano node and do transactions or similar with CNTools with ease. To run a stake pool or relay nood you will additionally need **Cardano Stake Pool Operator** skills as well as Bash and Docker skills. The "docker-compose.yml" file example contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
 
 ## How to start a node
 
-Create a "docker-compose.yml" like the following:
+"docker-compose.yml" example: 
 
 ```yml
 version: '2'
@@ -42,16 +42,16 @@ services:
                     ]
 ```
 
-Look into GitHub Repository for docker-compose.yml testnet example. 
+For a testnet example look at [docker-compose-testnet.yml](https://github.com/ststolz/Cardano-Node-Docker/blob/main/docker-compose-testnet.yml) in the GitHub Repository. 
 
-1. Change into directory containing docker-compose.yml and execute `docker-compose up`
-
-Congrats! Relay Node running and cntools are ready to use!
+1. Create a "docker-compose.yml" file like the example
+2. Change into directory containing docker-compose.yml and execute `docker-compose up`
+3. Congrats! Relay Node running and cntools are ready to use!
 
 ## How to setup a Cardano Relay Node with docker-compose.yml
 
-1. Comment out the volumes entry for "files" in docker-compose.yml example
-2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html) and put them into the "files" folder. Alternatively you can start a node like in first example and copy the folder "/files" out of the container into local file system with `docker cp` command (may not be up to date!).
+1. Comment out the volumes entry for "files" folder in docker-compose.yml example
+2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html) and put them into the "files" folder. Alternatively you can start a node like in first example and copy the folder "/files" out of the container into local file system with `docker cp` command.
 3. Edit Topology and after `docker-compose up` your relay node is running
 
 ## Usage Examples
