@@ -15,11 +15,11 @@ services:
         build:
             dockerfile: Dockerfile
             context: ./
-        command: ["cardano-node", "run", 
-                    "--config", "/opt/cardano/cnode/files/config.json", 
-                    "--topology", "/opt/cardano/cnode/files/mainnet-topology.json", 
-                    "--database-path", "/opt/cardano/cnode/db", 
-                    "--socket-path", "/opt/cardano/cnode/sockets/node0.socket",
-                    "--port", "7030"
-                    ]
-        
+
+        command: [ 
+        #            "--port", "7030",
+        #            "--host-addr <PUBLIC IP>",
+        #            "--shelley-kes-key kes.skey",
+        #            "--shelley-vrf-key vrf.skey",
+        #            "--shelley-operational-certificate node.cert" 
+        ]

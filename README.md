@@ -33,13 +33,13 @@ services:
         build:
             dockerfile: Dockerfile
             context: ./
-        command: ["cardano-node", "run", 
-                    "--config", "/opt/cardano/cnode/files/config.json", 
-                    "--topology", "/opt/cardano/cnode/files/mainnet-topology.json", 
-                    "--database-path", "/opt/cardano/cnode/db", 
-                    "--socket-path", "/opt/cardano/cnode/sockets/node0.socket",
-                    "--port", "7030"
-                    ]
+        command: [ 
+        #            "--port", "7030",
+        #            "--host-addr <PUBLIC IP>",
+        #            "--shelley-kes-key kes.skey",
+        #            "--shelley-vrf-key vrf.skey",
+        #            "--shelley-operational-certificate node.cert" 
+        ]
 ```
 
 For a testnet example look at [docker-compose-testnet.yml](https://github.com/ststolz/Cardano-Node-Docker/blob/main/docker-compose-testnet.yml) in the GitHub Repository. 
@@ -56,12 +56,26 @@ For a testnet example look at [docker-compose-testnet.yml](https://github.com/st
 
 ## Usage Examples
 
-### Use implemented cntools
+### execute cardano-cli
+
+On running container:
+
+```bash
+docker exec -i <container_id> cardano-cli [OPTION] ...
+```
+
+Run a container only for cardano-cli:
+
+```bash
+docker run --rm -i --entrypoint cardano-cli ststolz/cardano-node:latest [OPTION] ...
+```
+
+### Use implemented CNTools
 
 1. start your node
 2. Execute: `docker exec -ti <container_id> cntools.sh`
 
-### How to use with cntool as cold storage
+### How to use CNTools as cold storage
 
 Transfer your image to the cold storage by exporting it to an USB drive:
 
@@ -73,12 +87,6 @@ Restore the image on the cold storage:
 
 ```bash
 docker load -i <USB_path/cardano-node-image.tar>
-```
-
-You can use now cardano-cli with following command:
-
-```bash
-docker run --rm -i ststolz/cardano-node:latest cardano-cli [OPTION] ...
 ```
 
 You can use [cntools offline](https://cardano-community.github.io/guild-operators/#/Scripts/cntools-common?id=offline-workflow) with following command. Replace 74 by shelley epoch transition and replace ${PWD} by absolute path if you are using MS Windows.

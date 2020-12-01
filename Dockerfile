@@ -5,6 +5,7 @@ LABEL description="cardano-node and cardano-cli"
 
 # mainnet or testnet
 ARG net="mainnet" 
+ENV ENV_NET=${net}
 
 ARG ver="tags/1.23.0"
 ENV ENV_VER=${ver}
@@ -80,3 +81,9 @@ RUN curl -O https://hydra.iohk.io/build/4805432/download/1/${net}-byron-genesis.
     curl -O https://hydra.iohk.io/build/4805432/download/1/rest-config.json
 
 WORKDIR ${CNODE_HOME}
+
+ENTRYPOINT cardano-node run \
+                --config /opt/cardano/cnode/files/config.json \
+                --topology /opt/cardano/cnode/files/${ENV_NET}-topology.json \
+                --database-path /opt/cardano/cnode/db \
+                --socket-path /opt/cardano/cnode/sockets/node0.socket

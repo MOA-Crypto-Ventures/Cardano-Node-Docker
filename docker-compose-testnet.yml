@@ -3,7 +3,7 @@ version: '2'
 services:
 
     cardano-testnet-node:
-        image: ststolz/cardano-node:latest-testnet
+        image: ststolz/cardano-node:1.23.0-testnet
         container_name: stolz-cardano-testnet-relay
         network_mode: host
         volumes:
@@ -17,11 +17,10 @@ services:
             context: ./
             args:
                 net: testnet
-        command: ["cardano-node", "run", 
-                    "--config", "/opt/cardano/cnode/files/config.json", 
-                    "--topology", "/opt/cardano/cnode/files/testnet-topology.json", 
-                    "--database-path", "/opt/cardano/cnode/db", 
-                    "--socket-path", "/opt/cardano/cnode/sockets/node0.socket",
-                    "--port", "7031"
-                    ]
+        #command: [ 
+        #            "--host-addr <PUBLIC IP>",
+        #            "--shelley-kes-key kes.skey",
+        #            "--shelley-vrf-key vrf.skey",
+        #            "--shelley-operational-certificate node.cert" 
+        #          ]
         
