@@ -5,7 +5,7 @@
 ## News 2020-12-02
 
 1. [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
-2. To make it more simple, I **edited the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. See the examples below. 
+2. To make it more simple, I **edited the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. Lokk at the examples below. 
 
 ## Introduction
 
