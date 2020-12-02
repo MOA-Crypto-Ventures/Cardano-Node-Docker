@@ -21,7 +21,7 @@ To start the node for usage of cardano-cli or CNTools use a command like this:
 docker run --rm -ti --name cardano-node ststolz/cardano-node:latest
 ```
 
-After syncing you can use cardano-cli or CNTools:
+When syncing is done, you can use cardano-cli or CNTools:
 
 ```bash
 docker exec -ti cardano-node cardano-cli [ ARGS ]
