@@ -5,15 +5,32 @@
 ## News 2020-12-02
 
 1. [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
-2. To make it more simple, I **edited the entrypoint**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. Look at the examples below. 
+2. To make it more simple, I **edited the ENTRYPOINT**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. Look at the examples below. 
 
 ## Introduction
 
-This "Dockerfile" compiles cardano-node, cardano-cli and installs / configures CNTools. With some Docker skills you can run a cardano node and do transactions or similar with CNTools with ease. To run a stake pool or relay nood you will additionally need **Cardano Stake Pool Operator** skills as well as Bash and Docker skills. The "docker-compose.yml" file example contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
+This "Dockerfile" compiles cardano-node, cardano-cli and installs / configures CNTools. With some Docker skills you can run a Cardano node and do transactions or similar with CNTools with ease. To run a stake pool or relay node you will additionally need **Cardano Stake Pool Operator** skills as well as Bash and Docker skills. The "docker-compose.yml" file example contains all instructions to build the image and run the container. It is suited for a relay node. Feel free to copy it and adopt the run command for the block producing node. 
 
 ## How to start a node
 
-"docker-compose.yml" example: 
+### Simple start without persistence 
+
+To start the node for usage of cardano-cli or CNTools use a command like this:
+
+```bash
+docker run --rm -ti ststolz/cardano-node:latest
+```
+
+After syncing you can use cardano-cli or CNTools:
+
+```bash
+docker exec -ti cardano-node cardano-cli [ ARGS ]
+docker exec -ti cardano-node cntools.sh
+```
+
+### Start node with persistence
+
+Following "docker-compose.yml" example uses volumes for persistence of the node: 
 
 ```yml
 version: '2'
@@ -46,7 +63,7 @@ For a testnet example look at [docker-compose-testnet.yml](https://github.com/st
 
 1. Create a "docker-compose.yml" file like the example
 2. Change into directory containing docker-compose.yml and execute `docker-compose up`
-3. Congrats! Relay Node running and cntools are ready to use!
+3. Congrats! Relay Node running and CNTools are ready to use!
 
 ## How to setup a Cardano Relay Node with docker-compose.yml
 
@@ -77,7 +94,7 @@ docker run --rm -i --entrypoint cardano-cli ststolz/cardano-node:latest [OPTION]
 
 ### How to use CNTools as cold storage
 
-Transfer your image to the cold storage by exporting it to an USB drive:
+Transfer your image to the cold storage by exporting it to a USB drive:
 
 ```bash
 docker save -o <USB_path/cardano-node-image.tar> ststolz/cardano-node:latest
@@ -97,7 +114,7 @@ docker run --rm -it -v ${PWD}/priv:/opt/cardano/cnode/priv -v ${PWD}/tmp:/tmp  s
 
 ## Security 
 
-If you have security concerns refer to the [Dockerfile](https://github.com/ststolz/Cardano-Node-Docker/blob/main/Dockerfile) the image is built from. All software used was sourced from official Ubuntu Repositories or the original Software Repositories (haskell.org and input-output-hk). Your are free to use my Dockerfile and build the image on your own. See instructions in the [docker-compose.yml](https://github.com/ststolz/Cardano-Node-Docker/blob/main/docker-compose.yml).
+If you have security concerns, refer to the [Dockerfile](https://github.com/ststolz/Cardano-Node-Docker/blob/main/Dockerfile) the image is built from. All software used was sourced from official Ubuntu Repositories or the original Software Repositories (haskell.org and input-output-hk). You are free to use my Dockerfile and build the image on your own. See instructions in the [docker-compose.yml](https://github.com/ststolz/Cardano-Node-Docker/blob/main/docker-compose.yml).
 
 ## MIT License
 
