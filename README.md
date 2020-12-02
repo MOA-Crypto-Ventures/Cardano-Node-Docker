@@ -18,7 +18,7 @@ This "Dockerfile" compiles cardano-node, cardano-cli and installs / configures C
 To start the node for usage of cardano-cli or CNTools use a command like this:
 
 ```bash
-docker run --rm -ti ststolz/cardano-node:latest
+docker run --rm -ti --name cardano-node ststolz/cardano-node:latest
 ```
 
 After syncing you can use cardano-cli or CNTools:
