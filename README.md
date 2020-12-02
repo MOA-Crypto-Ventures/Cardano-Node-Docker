@@ -51,7 +51,7 @@ For a testnet example look at [docker-compose-testnet.yml](https://github.com/st
 ## How to setup a Cardano Relay Node with docker-compose.yml
 
 1. Comment out the volumes entry for "files" folder in docker-compose.yml example
-2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html) and put them into the "files" folder. Alternatively you can start a node like in first example and copy the folder "/files" out of the container into local file system with `docker cp` command.
+2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html) and put them into the "files" folder. Keep care that names are: "config.json" and "mainnet-topology.json". Alternatively you can start a node like in first example and copy the folder "/files" out of the container into local file system with `docker cp` command.
 3. Edit Topology and after `docker-compose up` your relay node is running
 
 ## Usage Examples
