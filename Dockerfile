@@ -3,10 +3,6 @@ FROM ubuntu:focal
 LABEL MAINTAINER sstolz
 LABEL description="cardano-node and cardano-cli"
 
-# mainnet or testnet
-ARG net="mainnet" 
-ENV ENV_NET=${net}
-
 ARG ver="tags/1.23.0"
 ENV ENV_VER=${ver}
 
@@ -21,14 +17,17 @@ ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 RUN echo ${PATH} && \
     apt-get update -y && \
     export DEBIAN_FRONTEND=noninteractive && \
-    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime 
+    ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime && \
 # install tools needed for cntools
-RUN apt-get install -y curl original-awk bsdmainutils sudo
-RUN apt-get install -y libpq-dev python3 build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev systemd libsystemd-dev libsodium-dev zlib1g-dev make g++ tmux git jq libncursesw5 gnupg aptitude libtool autoconf secure-delete iproute2 bc tcptraceroute dialog sqlite libsqlite3-dev
+    apt-get install -y curl original-awk bsdmainutils sudo && \
+    apt-get install -y libpq-dev python3 build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev systemd libsystemd-dev libsodium-dev zlib1g-dev make g++ tmux git jq libncursesw5 gnupg aptitude libtool autoconf secure-delete iproute2 bc tcptraceroute dialog sqlite libsqlite3-dev && \
 # compile and install tools for cardano compiling
-RUN    apt-get install -y tzdata && \
+    apt-get install -y tzdata && \
     dpkg-reconfigure --frontend noninteractive tzdata && \
-    apt install -y bc net-tools build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf && \
+    apt-get install -y bc net-tools build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev libsystemd-dev zlib1g-dev make g++ tmux git jq wget libncursesw5 libtool autoconf && \
+    #apt-get clean && \
+    #apt-get autoremove --yes && \
+    #rm -rf /var/lib/apt/lists/* && \
     cd && \
     wget https://downloads.haskell.org/~cabal/cabal-install-3.2.0.0/cabal-install-3.2.0.0-x86_64-unknown-linux.tar.xz && \
     tar -xf cabal-install-3.2.0.0-x86_64-unknown-linux.tar.xz && \
@@ -58,17 +57,27 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git  && \
     cabal install cardano-node cardano-cli
 
 ## Install guild-operator scripts
+
+# alpha until SUDO switch prereqs.sh in master
+ARG guild_ver="alpha"
+ENV ENV_GUILD_VER=${guild_ver}
+
 RUN mkdir -p ${CNODE_HOME}/scripts
 RUN mkdir -p ${CNODE_HOME}/guild-db
 RUN mkdir -p ${CNODE_HOME}/logs
 RUN git clone https://github.com/cardano-community/guild-operators.git  && \
     cd guild-operators && \
-    git checkout master  && \
+    git checkout ${ENV_GUILD_VER}  && \
     mv ./scripts/cnode-helper-scripts/* ${CNODE_HOME}/scripts && \
     cd / && rm -rf guild-operators
 RUN sed -i '/^#SOCKET=.* /s/^#//' ${CNODE_HOME}/scripts/env
 
 ## Get config files
+
+# mainnet or testnet
+ARG net="mainnet" 
+ENV ENV_NET=${net}
+
 RUN mkdir -p ${CNODE_HOME}/files
 RUN mkdir -p ${CNODE_HOME}/sockets
 WORKDIR ${CNODE_HOME}/files
