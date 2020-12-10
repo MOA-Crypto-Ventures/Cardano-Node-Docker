@@ -17,7 +17,7 @@ services:
             context: ./
             args:
                 net: testnet
-                guild_ver: alpha
+                guild_ver: master
         #command: [ 
         #            "--host-addr <PUBLIC IP>",
         #            "--shelley-kes-key kes.skey",

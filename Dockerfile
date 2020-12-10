@@ -3,7 +3,7 @@ FROM ubuntu:focal
 LABEL MAINTAINER sstolz
 LABEL description="cardano-node and cardano-cli"
 
-ARG ver="tags/1.23.0"
+ARG ver="1.24.2"
 ENV CNVERSION=${ver}
 
 # mainnet or testnet
@@ -21,12 +21,12 @@ ENV USER=root
 ENV DEBIAN_FRONTEND=noninteractive
 
 ENV CNODE_HOME="/opt/cardano/cnode"
-ENV PATH="/root/.cargo/bin:/root/.ghcup/bin:$PATH:$CNODE_HOME/scripts:/root/.cabal/bin"
+ENV PATH="/root/.cargo/bin:/root/.ghcup/bin:$PATH:/root/.cabal/bin"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 
 # guild-operators prereqs.sh
-ARG guild_ver="alpha"
+ARG guild_ver="master"
 ENV BRANCH=${guild_ver}
 RUN set -x && apt-get update \
   && mkdir -p /root/.cabal/bin && mkdir -p /root/.ghcup/bin \
@@ -34,16 +34,21 @@ RUN set -x && apt-get update \
   && apt-get install -y curl original-awk bsdmainutils sudo \
   && apt-get install -y libpq-dev python3 build-essential pkg-config libffi-dev libgmp-dev libssl-dev libtinfo-dev systemd libsystemd-dev libsodium-dev zlib1g-dev make g++ tmux git jq libncursesw5 gnupg aptitude libtool autoconf secure-delete iproute2 bc tcptraceroute dialog sqlite libsqlite3-dev \
   && wget https://raw.githubusercontent.com/cardano-community/guild-operators/${BRANCH}/scripts/cnode-helper-scripts/prereqs.sh \
-  #&& export SUDO='N' \
-  #&& export UPDATE_CHECK='N' \
-  #&& export BOOTSTRAP_HASKELL_NO_UPGRADE=1 \
-  && chmod +x ./prereqs.sh &&  ./prereqs.sh 
+  && sed -i "/if curl.*prereqs.sh.tmp.*scripts\/cnode-helper-scripts\/prereqs.sh/s/.*/if false; then/g" prereqs.sh \  
+  && sed -i "/SUDO=.*;/s/Y/N/g" ./prereqs.sh \
+  && echo ${NETWORK} \
+  && if [[ ${NETWORK} = "testnet" ]]; then echo "Is Testnet!"; fi \
+  && chmod +x ./prereqs.sh &&  ./prereqs.sh -c -l -n ${NETWORK} \
+  && sed -i '/^#SOCKET=.* /s/^#//' ${CNODE_HOME}/scripts/env \
+  && sed -i "/PROT_PARAMS=.*/s/ 2>&1//g" ${CNODE_HOME}/scripts/env
+
+ENV PATH="$CNODE_HOME/scripts:$PATH"
 
 # install cardano-node and cardano-cli
 RUN git clone https://github.com/input-output-hk/cardano-node.git \
   && export BOOTSTRAP_HASKELL_NO_UPGRADE=1 \
   && wget https://raw.githubusercontent.com/stakelovelace/cardano-htn/master/release-versions/cardano-node-latest.txt \
-  && CNVERSION=$(cat cardano-node-latest.txt) \
+  #&& CNVERSION=$(cat cardano-node-latest.txt) \
   && cd cardano-node \
   && echo "package cardano-crypto-praos" > cabal.project.local \
   && echo "   flags: -external-libsodium-vrf" >> cabal.project.local \
@@ -91,7 +96,7 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 #     make install
 # RUN git clone https://github.com/input-output-hk/cardano-node.git  && \
 #     cd cardano-node && \
-#     git checkout ${CNVERSION} && \
+#     git checkout tags/${CNVERSION} && \
 #     cabal build cardano-node cardano-cli && \
 #     cabal install cardano-node cardano-cli
 
@@ -119,12 +124,12 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 # RUN mkdir -p ${CNODE_HOME}/sockets
 # WORKDIR ${CNODE_HOME}/files
 # RUN pwd
-# RUN curl -o config.json https://hydra.iohk.io/build/4805432/download/1/${NETWORK}-config.json 
-# RUN curl -O https://hydra.iohk.io/build/4805432/download/1/${NETWORK}-byron-genesis.json && \
-#     curl -O https://hydra.iohk.io/build/4805432/download/1/${NETWORK}-shelley-genesis.json && \
-#     curl -o topology.json https://hydra.iohk.io/build/4805432/download/1/${NETWORK}-topology.json && \
-#     curl -O https://hydra.iohk.io/build/4805432/download/1/${NETWORK}-db-sync-config.json && \
-#     curl -O https://hydra.iohk.io/build/4805432/download/1/rest-config.json
+# RUN curl -o config.json https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-config.json 
+# RUN curl -O https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-byron-genesis.json && \
+#     curl -O https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-shelley-genesis.json && \
+#     curl -o topology.json https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-topology.json && \
+#     curl -O https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-db-sync-config.json && \
+#     curl -O https://hydra.iohk.io/build/5102327/download/1/rest-config.json
 
 WORKDIR ${CNODE_HOME}
 
