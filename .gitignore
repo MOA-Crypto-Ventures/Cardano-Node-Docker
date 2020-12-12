@@ -5,3 +5,4 @@ priv
 priv-testnet
 tmp
 .vscode
+docker-compose-tests-testnet.yml

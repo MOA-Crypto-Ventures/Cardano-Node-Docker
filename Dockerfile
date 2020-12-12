@@ -21,9 +21,11 @@ ENV USER=root
 ENV DEBIAN_FRONTEND=noninteractive
 
 ENV CNODE_HOME="/opt/cardano/cnode"
-ENV PATH="/root/.cargo/bin:/root/.ghcup/bin:$PATH:/root/.cabal/bin"
+ENV PATH="/root/bin:/root/.cargo/bin:/root/.ghcup/bin:$PATH:/root/.cabal/bin"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
+
+COPY ./startup.sh /root/bin/startup.sh
 
 # guild-operators prereqs.sh
 ARG guild_ver="master"
@@ -130,9 +132,4 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 
 WORKDIR ${CNODE_HOME}
 
-ENTRYPOINT [ "cardano-node", "run", \
-                "--config", "/opt/cardano/cnode/files/config.json", \
-                "--topology", "/opt/cardano/cnode/files/topology.json", \
-                "--database-path", "/opt/cardano/cnode/db", \
-                "--socket-path", "/opt/cardano/cnode/sockets/node0.socket" \
-            ]
+ENTRYPOINT [ "bash", "/root/bin/startup.sh" ]
