@@ -28,6 +28,7 @@ ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 # guild-operators prereqs.sh
 ARG guild_ver="master"
 ENV BRANCH=${guild_ver}
+RUN mkdir -p ${CNODE_HOME}/guild-db/cncli
 RUN set -x && apt-get update \
   && mkdir -p /root/.cabal/bin && mkdir -p /root/.ghcup/bin \
   && apt-get install -y bsdmainutils sudo apt-utils wget gnupg apt-utils git \
@@ -44,7 +45,7 @@ RUN set -x && apt-get update \
 
 ENV PATH="$CNODE_HOME/scripts:$PATH"
 
-# install cardano-node and cardano-cli
+# install cardano-node and cardano-cli via guild-operators cabal-build-all.sh
 RUN git clone https://github.com/input-output-hk/cardano-node.git \
   && export BOOTSTRAP_HASKELL_NO_UPGRADE=1 \
   && wget https://raw.githubusercontent.com/stakelovelace/cardano-htn/master/release-versions/cardano-node-latest.txt \
@@ -107,7 +108,6 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 # ENV ENV_GUILD_VER=${guild_ver}
 
 # RUN mkdir -p ${CNODE_HOME}/scripts
-# RUN mkdir -p ${CNODE_HOME}/guild-db
 # RUN mkdir -p ${CNODE_HOME}/logs
 # RUN git clone https://github.com/cardano-community/guild-operators.git  && \
 #     cd guild-operators && \
@@ -117,9 +117,6 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 # RUN sed -i '/^#SOCKET=.* /s/^#//' ${CNODE_HOME}/scripts/env
 
 ## Get config files
-
-
-
 # RUN mkdir -p ${CNODE_HOME}/files
 # RUN mkdir -p ${CNODE_HOME}/sockets
 # WORKDIR ${CNODE_HOME}/files
