@@ -6,6 +6,12 @@ LABEL description="cardano-node and cardano-cli"
 ARG ver="1.24.2"
 ENV CNVERSION=${ver}
 
+ENV CNODE_PORT=6000
+ENV EKG_HOST=127.0.0.1
+ENV EKG_PORT=12788
+ENV PROM_PORT=12798
+ENV POOL_NAME=""
+
 # mainnet or testnet
 ARG net="mainnet" 
 ENV NETWORK=${net}
@@ -43,7 +49,10 @@ RUN set -x && apt-get update \
   && if [[ ${NETWORK} = "testnet" ]]; then echo "Is Testnet!"; fi \
   && chmod +x ./prereqs.sh &&  ./prereqs.sh -c -l -n ${NETWORK} \
   && sed -i '/^#SOCKET=.* /s/^#//' ${CNODE_HOME}/scripts/env \
-  && sed -i "/PROT_PARAMS=.*/s/ 2>&1//g" ${CNODE_HOME}/scripts/env
+  # Workaround because of deprecated warning message
+  && sed -i "/PROT_PARAMS=.*/s/ 2>&1//" ${CNODE_HOME}/scripts/env \
+  # Comment out CNODE_PORT so that it can be set in docker-compose
+  && sed -i '/^CNODE_PORT=.* /s/^#*/#/' ${CNODE_HOME}/scripts/env 
 
 ENV PATH="$CNODE_HOME/scripts:$PATH"
 
