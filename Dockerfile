@@ -34,7 +34,7 @@ ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 COPY ./startup.sh /root/bin/startup.sh
 
 # guild-operators prereqs.sh
-ARG guild_ver="master"
+ARG guild_ver="53dbba9"
 ENV BRANCH=${guild_ver}
 RUN mkdir -p ${CNODE_HOME}/guild-db/cncli
 RUN set -x && apt-get update \

@@ -12,16 +12,16 @@ services:
             - ./sockets:/opt/cardano/cnode/sockets
             - ./priv-testnet:/opt/cardano/cnode/priv
             - ./tmp:/tmp
+        environment: 
+            - CNODE_PORT=8042
+            - EKG_HOST=127.0.0.1
+            - EKG_PORT=19992
+            - PROM_PORT=21112
+            - POOL_NAME=2TST
         build:
             dockerfile: Dockerfile
             context: ./
             args:
                 net: testnet
                 guild_ver: master
-        #command: [ 
-        #            "--host-addr <PUBLIC IP>",
-        #            "--shelley-kes-key kes.skey",
-        #            "--shelley-vrf-key vrf.skey",
-        #            "--shelley-operational-certificate node.cert" 
-        #          ]
         

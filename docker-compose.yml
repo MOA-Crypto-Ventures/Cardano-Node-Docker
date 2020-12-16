@@ -3,7 +3,7 @@ version: '2'
 services:
 
     cardano-node:
-        image: ststolz/cardano-node:latest
+        image: ststolz/cardano-node:1.24.2
         container_name: stolz-cardano-relay
         network_mode: host
         volumes:
@@ -12,14 +12,21 @@ services:
             - ./sockets:/opt/cardano/cnode/sockets
             - ./priv:/opt/cardano/cnode/priv
             - ./tmp:/tmp
+        environment:
+            - CNODE_PORT=6000
+            - EKG_HOST=127.0.0.1
+            - EKG_PORT=12788
+            - PROM_PORT=12798
+            #- POOL_NAME=POOL
         build:
             dockerfile: Dockerfile
             context: ./
-
-        command: [ 
+        # command only needed if not using cntools folder structure
+        # if using cntools folder structure you only have to set env POOL_NAME
+        #command: [ 
         #            "--port", "7030",
         #            "--host-addr <PUBLIC IP>",
         #            "--shelley-kes-key kes.skey",
         #            "--shelley-vrf-key vrf.skey",
         #            "--shelley-operational-certificate node.cert" 
-        ]
+        #]
