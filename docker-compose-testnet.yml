@@ -7,21 +7,30 @@ services:
         container_name: stolz-cardano-testnet-relay
         network_mode: host
         volumes:
-            #- ./files:/opt/cardano/cnode/files
+            # - ./files:/opt/cardano/cnode/files
             - ./db-testnet:/opt/cardano/cnode/db
             - ./sockets:/opt/cardano/cnode/sockets
             - ./priv-testnet:/opt/cardano/cnode/priv
             - ./tmp:/tmp
         environment: 
-            - CNODE_PORT=8042
+            - CNODE_PORT=6001
             - EKG_HOST=127.0.0.1
-            - EKG_PORT=19992
-            - PROM_PORT=21112
-            - POOL_NAME=2TST
+            - EKG_PORT=12789
+            - PROM_PORT=12799
+            # - POOL_NAME=POOL
         build:
             dockerfile: Dockerfile
             context: ./
             args:
                 net: testnet
                 guild_ver: master
+        # command only needed if not using cntools folder structure
+        # if using cntools folder structure you only have to set env POOL_NAME
+        #command: [ 
+        #            "--port", "7030",
+        #            "--host-addr <PUBLIC IP>",
+        #            "--shelley-kes-key kes.skey",
+        #            "--shelley-vrf-key vrf.skey",
+        #            "--shelley-operational-certificate node.cert" 
+        #]
         
