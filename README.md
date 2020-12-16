@@ -38,25 +38,33 @@ version: '2'
 services:
 
     cardano-node:
-        image: ststolz/cardano-node:latest
+        image: ststolz/cardano-node:1.24.2
         container_name: stolz-cardano-relay
         network_mode: host
         volumes:
-            #- ./files:/opt/cardano/cnode/files
+            # - ./files:/opt/cardano/cnode/files
             - ./db:/opt/cardano/cnode/db
             - ./sockets:/opt/cardano/cnode/sockets
             - ./priv:/opt/cardano/cnode/priv
             - ./tmp:/tmp
+        environment:
+            - CNODE_PORT=6000
+            - EKG_HOST=127.0.0.1
+            - EKG_PORT=12788
+            - PROM_PORT=12798
+            # - POOL_NAME=POOL
         build:
             dockerfile: Dockerfile
             context: ./
-        command: [ 
+        # command only needed if not using cntools folder structure
+        # if using cntools folder structure you only have to set env POOL_NAME
+        # command: [ 
         #            "--port", "7030",
         #            "--host-addr <PUBLIC IP>",
         #            "--shelley-kes-key kes.skey",
         #            "--shelley-vrf-key vrf.skey",
         #            "--shelley-operational-certificate node.cert" 
-        ]
+        # ]
 ```
 
 For a testnet example look at [docker-compose-testnet.yml](https://github.com/ststolz/Cardano-Node-Docker/blob/main/docker-compose-testnet.yml) in the GitHub Repository. 
@@ -65,11 +73,18 @@ For a testnet example look at [docker-compose-testnet.yml](https://github.com/st
 2. Change into directory containing docker-compose.yml and execute `docker-compose up`
 3. Congrats! Relay Node running and CNTools are ready to use!
 
-## How to setup a Cardano Relay Node with docker-compose.yml
+## How to setup a Cardano Relay Node
 
 1. Comment out the volumes entry for "files" folder in docker-compose.yml example
 2. Download Topology/config files from [hydra.iohk.io](https://hydra.iohk.io/job/Cardano/cardano-node/cardano-deployment/latest-finished/download/1/index.html) and put them into the "files" folder. Keep care that names are: "config.json" and "mainnet-topology.json". Alternatively you can start a node like in first example and copy the folder "/files" out of the container into local file system with `docker cp` command.
 3. Edit Topology and after `docker-compose up` your relay node is running
+
+## How to setup a Staking Pool with cntools
+
+1. Start the node with volume priv mounted (look at docker-compose.yml example) for persistence. To edit relay pools you also have to mount files (look at "How to setup a Cardano Relay Node" fot init)
+2. Switch to container `docker exec -ti container-name bash`
+3. Start cntools.sh and create the pool
+4. Set the env for pool name and restart container
 
 ## Usage Examples
 
