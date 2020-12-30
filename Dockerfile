@@ -31,8 +31,6 @@ ENV PATH="/root/bin:/root/.cargo/bin:/root/.ghcup/bin:$PATH:/root/.cabal/bin"
 ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 
-COPY ./startup.sh /root/bin/startup.sh
-
 # guild-operators prereqs.sh
 ARG guild_ver="53dbba9"
 ENV BRANCH=${guild_ver}
@@ -138,6 +136,12 @@ RUN git clone https://github.com/input-output-hk/cardano-node.git \
 #     curl -o topology.json https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-topology.json && \
 #     curl -O https://hydra.iohk.io/build/5102327/download/1/${NETWORK}-db-sync-config.json && \
 #     curl -O https://hydra.iohk.io/build/5102327/download/1/rest-config.json
+
+# Additional custom peers to (IP:port[:valency]) to add to your target topology.json, eg: "10.0.0.1:3001|10.0.0.2:3002|relays.mydomain.com:3003:3"
+ENV CNODE_HOSTNAME="CHANGE ME"
+ENV CUSTOM_PEERS=""
+
+COPY ./startup.sh /root/bin/startup.sh
 
 WORKDIR ${CNODE_HOME}
 

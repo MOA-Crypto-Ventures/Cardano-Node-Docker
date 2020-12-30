@@ -53,6 +53,10 @@ services:
             - EKG_PORT=12788
             - PROM_PORT=12798
             # - POOL_NAME=POOL
+            # (Optional) Must resolve to the IP you are requesting from
+            # - CNODE_HOSTNAME="CHANGE ME"
+            # Additional custom peers to (IP:port[:valency]) to add to your target topology.json, eg: "10.0.0.1:3001|10.0.0.2:3002|relays.mydomain.com:3003:3"
+            # - CUSTOM_PEERS=""
         build:
             dockerfile: Dockerfile
             context: ./
@@ -106,6 +110,14 @@ docker run --rm -i --entrypoint cardano-cli ststolz/cardano-node:latest [OPTION]
 
 1. start your node
 2. Execute: `docker exec -ti <container_id> cntools.sh`
+
+### Use implemented `topologyUpdater.sh`
+
+Get the name of the running container and then all you have to do, is to add following cron job. 
+
+```crontab
+30 */1 * * * docker exec ${container_name} topologyUpdater.sh
+```
 
 ### How to use CNTools as cold storage
 

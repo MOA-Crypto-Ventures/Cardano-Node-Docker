@@ -18,6 +18,10 @@ services:
             - EKG_PORT=12788
             - PROM_PORT=12798
             # - POOL_NAME=POOL
+            # (Optional) Must resolve to the IP you are requesting from
+            # - CNODE_HOSTNAME="CHANGE ME"
+            # Additional custom peers to (IP:port[:valency]) to add to your target topology.json, eg: "10.0.0.1:3001|10.0.0.2:3002|relays.mydomain.com:3003:3"
+            # - CUSTOM_PEERS=""
         build:
             dockerfile: Dockerfile
             context: ./
