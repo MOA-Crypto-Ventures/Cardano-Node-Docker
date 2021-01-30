@@ -2,10 +2,20 @@
 
 [cardano-node](https://github.com/input-output-hk/cardano-node) Docker image with configured [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) to be flexible, fast and safe in deployment.
 
-## News 2020-12-02
+## News 2020-01-30
 
-1. [CNTools](https://cardano-community.github.io/guild-operators/#/Scripts/cntools) are implemented ready to use
-2. To make it more simple, I **edited the ENTRYPOINT**. So keep care to **change your docker-compose.yml and your scripts** with newly pulled images. Look at the examples below. 
+If upgrading fom version lower 1.25.1, you have to copy the new `config.json` out of the container. Start a container:
+
+```bash
+docker run -ti --rm --name cnode --entrypoint bash ststolz/cardano-node:1.25.1
+```
+
+Open a new shell, switch to the folder containing old `config.json` and:
+
+```bash
+mv config.json config.json.old
+docker cp cnode:/opt/cardano/cnode/files/config.json ./config.json
+```
 
 ## Introduction
 
