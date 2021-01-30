@@ -3,7 +3,7 @@ FROM ubuntu:focal
 LABEL MAINTAINER sstolz
 LABEL description="cardano-node and cardano-cli"
 
-ARG ver="1.24.2"
+ARG ver="1.25.1"
 ENV CNVERSION=${ver}
 
 ENV CNODE_PORT=6000
@@ -32,7 +32,7 @@ ENV LD_LIBRARY_PATH="/usr/local/lib:$LD_LIBRARY_PATH"
 ENV CARDANO_NODE_SOCKET_PATH="${CNODE_HOME}/sockets/node0.socket"
 
 # guild-operators prereqs.sh
-ARG guild_ver="53dbba9"
+ARG guild_ver="master"
 ENV BRANCH=${guild_ver}
 RUN mkdir -p ${CNODE_HOME}/guild-db/cncli
 RUN set -x && apt-get update \

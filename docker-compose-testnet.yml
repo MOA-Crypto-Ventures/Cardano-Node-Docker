@@ -3,7 +3,7 @@ version: '2'
 services:
 
     cardano-testnet-node:
-        image: ststolz/cardano-node:1.24.2-testnet
+        image: ststolz/cardano-node:1.25.1-testnet
         container_name: stolz-cardano-testnet-relay
         network_mode: host
         volumes:
