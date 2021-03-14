@@ -146,7 +146,7 @@ docker load -i <USB_path/cardano-node-image.tar>
 You can use [cntools offline](https://cardano-community.github.io/guild-operators/#/Scripts/cntools-common?id=offline-workflow) with following command. Replace 74 by shelley epoch transition and replace ${PWD} by absolute path if you are using MS Windows.
 
 ```bash
-docker run --rm -it -v ${PWD}/priv:/opt/cardano/cnode/priv -v ${PWD}/tmp:/tmp  ststolz/cardano-node:latest-testnet bash -c 'echo 74 > "/opt/cardano/cnode/guild-db/shelley_trans_epoch" && cntools.sh -o'
+docker run --rm -it -v ${PWD}/priv:/opt/cardano/cnode/priv -v ${PWD}/tmp:/tmp --entrypoint /opt/cardano/cnode/scripts/cntools.sh ststolz/cardano-node:latest -o
 ```
 
 ## Security 
